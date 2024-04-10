@@ -6,6 +6,23 @@ let butOpenFile = document.getElementById('butOpen');
 let textArea = document.getElementById('textarea');
 
 
+// there might be a way to just look into the metadata
+
+// these values (author, etc. ) are taken from the heading of the document
+function fileMetadata(filename, size, date, author) {
+  this.filename = filename;
+  this.size = size; // in KB
+  this.date = date; // datetime operations and format
+  this.author = author;
+  return { filename, size, date, author };
+}
+
+const file1 = fileMetadata('file1.docx', '128', 'December 19, 2019', 'Jane Doe');
+const file2 = fileMetadata('file2_newname.docx', '256', '12/20/2025', 'Jane Doe');
+const file3 = fileMetadata('FILE3.docx', '9123', '02/20/2010', 'John Doe');
+console.log('file1.author = ' + file1.author);
+
+
 butOpenFile.addEventListener('click', async () => {
     // Destructure the one-element array.
     [fileHandle] = await window.showOpenFilePicker();
@@ -60,17 +77,3 @@ async function verifyPermission(fileHandle, withWrite) {
   // The user did nt grant permission, return false.
   return false;
 }
-
-// fileHandle is an instance of FileSystemFileHandle..
-async function writeFile(fileHandle, contents) {
-    // Create a FileSystemWritableFileStream to write to.
-    const writable = await fileHandle.createWritable();
-    // Write the contents of the file to the stream.
-    await writable.write(contents);
-    // Close the file and write the contents to disk.
-    await writable.close();
-  }
-  
-
-// this saves a blank file with the specified name
-saveFile.addEventListener('click', writeFile(getNewFileHandle(), textArea.value));
